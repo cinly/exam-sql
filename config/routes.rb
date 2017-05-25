@@ -1,74 +1,91 @@
 Rails.application.routes.draw do
-  post '/rate' => 'rater#create', :as => 'rate'
-  get '/info' => 'info#index'
-  devise_for :users
-  # devise_for :users, :controllers => {
-  #   :sessions      => "users/sessions",
-  #   :registrations => "users/registrations",
-  #   :passwords     => "users/passwords",
-  # }
-  resources :products do
-    member do
-      post :add_to_cart
-      post :favorite
-      post :unfavorite
-      post :instant_buy
-    end
-    collection do
-      get :search
-    end
-    resources :reviews, only: [:new, :create]
+
+  get 'panel/exam/:id'=>'panel#exam',as:"panel_exam"
+  post 'panel/exam/:id'=>'panel#check'
+  get 'panel/index'
+
+  get 'panel/taken'
+
+  get 'panel/untaken'
+
+  get 'panel/info'
+
+  get '/' => 'index#index',as:"index"
+  post 'index/create'
+
+  post '/' =>'index#new'
+  delete '/exit' => 'index#destroy'
+
+
+  resources :exams
+  get "exams/optbox/:id"=>'exams#optbox',as:"exam_optbox"
+  resources :questions
+
+  resources :students
+
+  controller :sessions do
+    get "login"=>'sessions#new'
+    post 'login' =>'sessions#create'
+    delete 'logout'=>"sessions#destroy"
   end
 
-  namespace :admin do
-    resources :categories
-    resources :sizes
-    resources :exams
-    resources :answers do
-      post :ture_answer
-    end
-    resources :orders do
-      member do
-        post :cancel
-        post :ship
-        post :shipped
-        post :return
-      end
-    end
-  end
 
-  resources :carts do
-    collection do
-      delete :clean
-      post :checkout
-    end
-  end
+  get 'admin/index'
+  get 'admin/' => 'admin#index'
+  resources :teachers
 
-  resources :cart_items
+  # The priority is based upon order of creation: first created -> highest priority.
+  # See how all your routes lay out with "rake routes".
 
-  resources :orders do
-    member do
-      post :pay_with_alipay
-      post :pay_with_wechat
-      post :apply_to_cancel
-    end
-  end
+  # You can have the root of your site routed with "root"
+  # root 'welcome#index'
 
-  namespace :account do
-    resources :orders
-  end
+  # Example of regular route:
+  #   get 'products/:id' => 'catalog#view'
 
-  resources :favorites
+  # Example of named route that can be invoked with purchase_url(id: product.id)
+  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 
-  resources :exams do
-    member do
-      post :check_answer
-    end
-  end
+  # Example resource route (maps HTTP verbs to controller actions automatically):
+  #   resources :products
 
-  resources :answers
+  # Example resource route with options:
+  #   resources :products do
+  #     member do
+  #       get 'short'
+  #       post 'toggle'
+  #     end
+  #
+  #     collection do
+  #       get 'sold'
+  #     end
+  #   end
 
-  root "welcome#index"
+  # Example resource route with sub-resources:
+  #   resources :products do
+  #     resources :comments, :sales
+  #     resource :seller
+  #   end
 
-  get 'about' => 'welcome#about'
+  # Example resource route with more complex sub-resources:
+  #   resources :products do
+  #     resources :comments
+  #     resources :sales do
+  #       get 'recent', on: :collection
+  #     end
+  #   end
+
+  # Example resource route with concerns:
+  #   concern :toggleable do
+  #     post 'toggle'
+  #   end
+  #   resources :posts, concerns: :toggleable
+  #   resources :photos, concerns: :toggleable
+
+  # Example resource route within a namespace:
+  #   namespace :admin do
+  #     # Directs /admin/products/* to Admin::ProductsController
+  #     # (app/controllers/admin/products_controller.rb)
+  #     resources :products
+  #   end
 end

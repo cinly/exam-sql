@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,106 +11,70 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170524030233) do
+ActiveRecord::Schema.define(version: 20140619123119) do
 
-  create_table "answers", force: :cascade do |t|
-    t.string   "true_answer"
+  create_table "contests", force: true do |t|
+    t.integer  "exam_id"
+    t.integer  "student_id"
+    t.integer  "mark"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "contests", ["exam_id"], name: "index_contests_on_exam_id", using: :btree
+  add_index "contests", ["student_id"], name: "index_contests_on_student_id", using: :btree
+
+  create_table "exams", force: true do |t|
+    t.string   "name",                                       null: false
     t.text     "description"
-    t.string   "image"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "valid_from"
+    t.datetime "valid_to"
+    t.integer  "timespan"
+    t.integer  "teacher_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.decimal  "average_difficulty", precision: 5, scale: 2
   end
 
-  create_table "cart_items", force: :cascade do |t|
-    t.integer  "cart_id"
-    t.integer  "product_id"
-    t.integer  "quantity",   default: 1
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+  create_table "exams_questions", id: false, force: true do |t|
+    t.integer "exam_id",     null: false
+    t.integer "question_id", null: false
   end
 
-  create_table "carts", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+  add_index "exams_questions", ["exam_id", "question_id"], name: "index_exams_questions_on_exam_id_and_question_id", using: :btree
 
-  create_table "categories", force: :cascade do |t|
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "exams", force: :cascade do |t|
-    t.string   "name"
-    t.string   "question"
-    t.text     "answer_1"
-    t.text     "answer_2"
-    t.text     "answer_3"
-    t.text     "answer_4"
-    t.text     "answer_5"
-    t.text     "answer_6"
-    t.integer  "category_id"
-    t.string   "image"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
-    t.boolean  "is_true",     default: false
-  end
-
-  create_table "orders", force: :cascade do |t|
-    t.integer  "total",            default: 0
-    t.integer  "user_id"
-    t.string   "billing_name"
-    t.string   "billing_address"
-    t.string   "shipping_name"
-    t.string   "shipping_address"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
-    t.string   "token"
-    t.boolean  "is_paid",          default: false
-    t.string   "payment_method"
-  end
-
-  create_table "product_lists", force: :cascade do |t|
-    t.integer  "order_id"
-    t.string   "product_name"
-    t.integer  "product_price"
-    t.integer  "quantity"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
-  create_table "products", force: :cascade do |t|
-    t.string   "title"
+  create_table "questions", force: true do |t|
+    t.text     "title",                       null: false
     t.text     "description"
-    t.integer  "quantity"
-    t.integer  "price"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.string   "image"
+    t.text     "options",                     null: false
+    t.integer  "teacher_id"
+    t.string   "answer",                      null: false
+    t.boolean  "multiple",    default: false
+    t.integer  "difficulty",  default: 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  create_table "sizes", force: :cascade do |t|
+  add_index "questions", ["teacher_id", "difficulty"], name: "index_questions_on_teacher_id_and_difficulty", using: :btree
+
+  create_table "students", force: true do |t|
+    t.string   "stuid",           limit: 50
+    t.string   "name",                       null: false
+    t.string   "hashed_password"
+    t.boolean  "sex"
+    t.string   "profession"
+    t.integer  "grade"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "teachers", force: true do |t|
     t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "users", force: :cascade do |t|
-    t.string   "email",                  default: "",    null: false
-    t.string   "encrypted_password",     default: "",    null: false
-    t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,     null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
-    t.boolean  "is_admin",               default: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.string   "hashed_password"
+    t.string   "salt"
+    t.boolean  "is_admin",        default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

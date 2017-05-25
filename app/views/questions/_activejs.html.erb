@@ -1,0 +1,59 @@
+$('#question_answer').selectpicker({
+	iconBase:"fa",
+	noneSelectedText:"没有选择",
+	countSelectedText:"选了{0}个，共{1}个",
+  size: 4
+});
+function change_select(){
+	selector=$('#question_answer');
+	selector.html("");
+	values=$('#question_options')[0].value.split(",");
+	for (var i = 0; i <= values.length -1; i++) {
+		selector.append("<option value=\""+values[i]+"\">"+values[i]+"</option>");
+	};
+	selector.selectpicker('refresh');
+}
+
+$('#question_options').tagsInput({
+	"defaultText": "新建一个选项",
+	'onChange' : change_select,
+	'width':"460px"
+});
+$('#parse_option').click(function(){
+	var re=/(（\w）[^\b|\s]+)|(\w\W[^\b|\s]+)/ig
+	var str=$('#option_str').val();
+	var result=str.match(re);
+	var text;
+	for (var i =  0; i < result.length; i++) {
+		text=result[i].split(/^\w\W/)[1].trim();
+		$('#question_options').addTag(text);
+	};
+	
+});
+$('#question_difficulty').change(function(){
+	val=this.value;
+	diff=$('#diff');
+	diff.removeClass();
+	diff.addClass("label");
+	switch(parseInt(val)){
+		case 1:case 2:
+			diff.html("入门");
+			break;
+		case 3:case 4:
+			diff.addClass("label-success");
+			diff.html("简单");
+			break;
+		case 5:case 6:
+			diff.addClass("label-info");
+			diff.html("普通");
+			break;
+		case 7:case 8:
+			diff.addClass("label-warning");
+			diff.html("稍难");
+			break;
+		case 9:case 10:
+			diff.addClass("label-important");
+			diff.html("困难");
+			break;
+	}
+});

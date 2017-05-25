@@ -1,44 +1,48 @@
-
-<hr>
-
-<br>
-<div class="row">
-  <div class="col-md-6">
-    <% if @photos.present? %>
-      <% @photos.each_with_index do |p, index| %>
-        <% if index == 0 %>
-          <%= image_tag p.image.medium.url %>
-        <% else %>
-          <%= image_tag p.image.thumb.url %>
+<%= content_for :ext_nav_item do %>
+<li class="current">
+  <a><%= @exam.name %></a>
+</li>
+<% end %>
+<table class="table">
+  <tr>
+    <td><strong>考试名称:</strong></td>
+    <td><%= @exam.name %></td>
+  </tr>
+  <tr>
+    <td><strong>描述:</strong></td>
+    <td><%= @exam.description %></td>
+  </tr>
+  <tr>
+    <td><strong>起始时间:</strong></td>
+    <td><%= time2str @exam.valid_from %></td>
+  </tr>
+  <tr>
+    <td><strong>结束时间:</strong></td>
+    <td><%= time2str @exam.valid_to %></td>
+  </tr>
+  <tr>
+    <td><strong>考试时长:</strong></td>
+    <td><%= @exam.timespan %>分钟</td>
+  </tr>
+  <tr>
+    <td><strong>试题:</strong></td>
+    <td>
+        <% unless @exam.questions.empty? %>
+          <% @exam.questions.each do |question| %>
+          <div style="margin-bottom:5px;"><%= difficulty_level question.difficulty %> <%= truncate question.title,length:16 %>  </div>
+          <% end %>
         <% end %>
-      <% end %>
-    <% else %>
-      <h4>#</h4>
-    <% end %>
-  </div>
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>第<%= @exam.id %>题</th>
-        <th>题目：<%= @exam.question%></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <%= @exam.name %>
-        </td>
-         <td>
-           选项：
-           <br>
-           <%= @exam.answer_1 %>
-           <br>
-           <%= @exam.answer_2 %>
-         </td>
-       </tr>
-     </tbody>
-   </table>
+    </td>
+  </tr>
+  <tr>
+    <td><strong>平均难度:</strong></td>
+    <td><%= difficulty_level @exam.average_difficulty %></td>
+  </tr>
+  <tr>
+    <td><strong>提供者:</strong></td>
+    <td><%= @exam.teacher.name %></td>
+  </tr>
+</table>
 
-   <div class="button">
-        <%= link_to("查看答案", check_answer_exam_path(@exam), class: "buy btn btn-block ",  :method => :post) %>
-   </div>
+<%= link_to '编辑', edit_exam_path(@exam),:class=>"btn btn-success" %>
+<%= link_to '返回', exams_path,:class=>"btn" %>

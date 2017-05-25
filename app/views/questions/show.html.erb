@@ -1,0 +1,9 @@
+<%= content_for :ext_nav_item do %>
+<li class="current">
+  <a><%= @question.title %></a>
+</li>
+<% end %>
+
+<%= render "show" %>
+<%= link_to '编辑', edit_question_path(@question),:class=>"btn btn-success" %>
+<%= link_to '返回', questions_path,:class=>"btn" %>

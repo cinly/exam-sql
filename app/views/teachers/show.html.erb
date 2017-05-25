@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>教师姓名:</strong>
+  <%= @teacher.name %>
+</p>
+
+<p>
+  <strong>是否为管理员:</strong>
+  <%= @teacher.is_admin %>
+</p>
+
+<%= link_to '编辑', edit_teacher_path(@teacher) %> |
+<%= link_to '返回', teachers_path %>

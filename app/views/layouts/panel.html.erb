@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Examal-在线考试系统</title>
+	<%= stylesheet_link_tag    'index', media: 'all', 'data-turbolinks-track' => true %>
+	<%= stylesheet_link_tag    'panel', media: 'all', 'data-turbolinks-track' => true %>
+	<%= yield :css %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  
+	<%= csrf_meta_tags %>
+</head>
+<body>
+<div class="panels">
+	<div class="panel-header ">
+		<%= image_tag("logo.png",id:"logo") %>
+	</div>
+	<div class="aside">
+		<div class="list-group">
+		<% navs=[
+			{name:"概况",icon:"dashboard",action:"index"},
+			{name:"已参加的考试",icon:"check",action:"taken"},
+			{name:"未参加的考试",icon:"refresh",action:"untaken"},
+			{name:"修改个人信息",icon:"user",action:"info"},
+		]
+		%>
+		<% navs.each do |nav| %>
+			<% 
+			cls=""
+			cls="active" if nav[:action]==request.filtered_parameters["action"]
+			   %>
+			<%= link_to content_tag(:i,"",:class=>"glyphicon glyphicon-#{nav[:icon]}")+" #{nav[:name]}",{controller:"panel",action:nav[:action]},:class=>"list-group-item #{cls}" %>
+		<% end %>
+		<%= link_to content_tag(:i,"",:class=>"glyphicon glyphicon-share")+" 退出",exit_url,:class=>"list-group-item",method: :delete %>
+		</div>
+	</div>
+	<div class="content">
+	<% unless notice.nil? %>
+        <div class="alert alert-info">
+          <%= notice %>
+        </div>
+    <% end %>
+	<%= yield %>
+		
+	</div>
+</div>
+</body>
+<%= yield :js %>
+</html>
